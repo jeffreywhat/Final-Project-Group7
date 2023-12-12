@@ -9,7 +9,8 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 nlp = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
 def preprocess_data(X):
@@ -135,13 +136,24 @@ def metrics(prediction, actual):
     print(classification_report(actual, prediction))
 
 # Loading Dataset
-df_train = pd.read_csv('nlpproject/train.csv')
+df_train = pd.read_csv('faketweets/train.csv')
 print(df_train.head(10))
 columns_drop = ['id','keyword','location']
 
 df_train = df_train.drop(columns=columns_drop)
 
-print(df_train['target'].value_counts())
+
+
+# Assuming 'target' is the name of your target variable
+target_counts = df_train['target'].value_counts()
+print(target_counts)
+# Plotting the distribution
+plt.figure(figsize=(8, 6))
+sns.barplot(x=target_counts.index, y=target_counts.values, palette="viridis")
+plt.title('Distribution of Target Variable')
+plt.xlabel('Target')
+plt.ylabel('Count')
+plt.show()
 X_train, X_test,Y_train , Y_test = train_test_split(df_train['text'],df_train['target'], test_size=0.2)
 X_train = preprocess_data(X_train)
 X_test = preprocess_data(X_test)
@@ -166,3 +178,18 @@ model_filename = 'multinomial_nb_model.joblib'
 joblib.dump(clb_tf, model_filename)
 
 print(f"Model saved to {model_filename}")
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Calculate confusion matrix
+conf_matrix = confusion_matrix(Y_test, predicted)
+
+# Plot confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['Non-Disaster', 'Disaster'],
+            yticklabels=['Non-Disaster', 'Disaster'])
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()

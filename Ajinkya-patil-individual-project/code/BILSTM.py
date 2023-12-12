@@ -132,7 +132,7 @@ def preprocess_data(X):
 
     return X
 
-df= pd.read_csv('nlpproject/train.csv')
+df= pd.read_csv('faketweets/train.csv')
 glove_path = 'glove.6B.300d.txt'
 
 df['text'] = preprocess_data(df['text'])
